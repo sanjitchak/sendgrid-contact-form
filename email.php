@@ -4,23 +4,7 @@
 
 require_once('sendgrid-php/sendgrid-php.php');
 
-$email = new \SendGrid\Mail\Mail();
-$email->setFrom("dm@digitalmarket.com", "DM");
-$email->setSubject("Sending with Twilio SendGrid is Fun");
-$email->addTo("sanjit@growonlinetoday.com", "Example User");
-$email->addContent("text/plain", "and easy to do anywhere, even with PHP");
-$email->addContent(
-    "text/html", "<strong>and easy to do anywhere, even with PHP</strong>"
-);
-$sendgrid = new \SendGrid('APIKEY');
-try {
-    $response = $sendgrid->send($email);
-    print $response->statusCode() . "\n";
-    print_r($response->headers());
-    print $response->body() . "\n";
-} catch (Exception $e) {
-    echo 'Caught exception: '. $e->getMessage() ."\n";
-}
+
 
  
 if(isset($_POST['email'])) {
@@ -127,16 +111,27 @@ if(isset($_POST['email'])) {
     $email_message .= "Comments: ".clean_string($comments)."\n";
  
       
- 
-// create email headers
- 
-$headers = 'From: '.$email_from."\r\n".
- 
-'Reply-To: '.$email_from."\r\n" .
- 
-'X-Mailer: PHP/' . phpversion();
- 
-@mail($email_to, $email_subject, $email_message, $headers);  
+    $email = new \SendGrid\Mail\Mail();
+    $email->setFrom("dm@digitalmarket.com", "DigitalMarket");
+    $email->setSubject("Form Result");
+    $email->addTo("sanjit@growonlinetoday.com", "Sanjit");
+    $email->addContent("text/plain", $email_message);
+   
+    $sendgrid = new \SendGrid('APIKEY');
+    try {
+        $response = $sendgrid->send($email);
+        // print $response->statusCode() . "\n";
+        // print_r($response->headers());
+        // print $response->body() . "\n";
+        echo ' 
+        <h1>Thank you for your message!</h1> <h2>We will contact you as soon as possible.</h2>
+        ';
+    } catch (Exception $e) {
+        // echo 'Caught exception: '. $e->getMessage() ."\n";
+        echo ' 
+        <h1>Something went wrong. We will look into it. </h2>
+        ';
+    }
  
 ?>
  
@@ -145,8 +140,6 @@ $headers = 'From: '.$email_from."\r\n".
 <!-- include your own success html here -->
  
  
- 
-<h1>Thank you for your message!</h1> <h2>We will contact you as soon as possible.</h2>
 
  
  
